@@ -1,0 +1,8 @@
+1. npm install --save-dev nodemon
+2. npm install --save morgan
+3. npm install --save body-parser
+4. npm install --save express
+5. npm install --save mongodb ???
+6. npm install --save mongoose
+
+ip address: 147.237.70.61

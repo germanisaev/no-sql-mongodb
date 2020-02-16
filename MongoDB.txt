@@ -1,0 +1,246 @@
+https://www.youtube.com/watch?v=EseOefIBP9M
+
+---------- Run MongoDB ----------
+1. cd C:\
+    md "\data\db"
+
+2. "C:\Program Files\MongoDB\Server\4.2\bin\mongod.exe" --dbpath="c:\data\db"
+
+3. "C:\Program Files\MongoDB\Server\4.2\bin\mongo.exe"
+--------------------------------------
+
+
+db.users.insertOne(
+{
+_id:2,
+"name":"Jack",
+"email":"jack@gmail.com",
+"age":32,
+"hasCar":false,
+"favColor":["Black","Red","White"],
+"child":{"name":"Jack","surname":"Charley","age":5}
+}
+)
+
+db.users.insertOne(
+{
+"name":"Bill",
+"email":"admin@gmail.com",
+"age":43,
+"hasCar":false,
+"favColor":["Black","Red","White"],
+"password":"Aa123456"
+}
+)
+
+
+db.users.insertOne(
+{
+"name":"George",
+"email":"george@gmail.com",
+"age":22,
+"hasCar":false,
+"birthday": new Date('1970-04-26')
+}
+)
+
+
+db.users.insertMany([
+{
+"name":"Bob",
+"email":"bob@gmail.com",
+"age":25,
+"hasCar":true,
+"birthday": new Date('1970-04-26')
+},
+{
+"name":"Donald",
+"email":"donald@gmail.com",
+"age":41,
+"hasCar":false,
+"birthday": new Date('1970-04-26')
+},
+{
+"name":"David",
+"email":"david@gmail.com",
+"age":19,
+"hasCar":true,
+"birthday": new Date('2001-04-30')
+}
+])
+
+
+db.users.updateOne({age: 23}, {$set: {age: 25}})					// update table users column age set from 23 to 25 by one list
+
+db.users.updateMany({age: 25}, {$set: {age: 23}})					// update table users column age set from 25 to 23 by many list
+
+db.users.updateMany({age: 23}, {$set: {name: "User", email: "user@gmail.com"}})		// update table users column age set from 25 to 23 by many list
+
+db.users.replaceOne({age: 23}, {name: "Admin", hasCar: 23, password: "234", hasWife: true})	// replace columns by age = 23 in teble users by one list
+
+db.users.deleteOne()
+
+db.users.deleteMany({age: {$gt: 22}, age: {$lte: 38}})
+
+use itproger									// use database "itproger"
+
+db.users.find()									// view all users
+
+db.users.find({}, {_id: 0})								// no show column id
+
+db.users.find({name: {$in: ["Jack","John","Bob"]}}, {_id: 0})				// filter by specific names
+
+db.users.find({name: {$nin: ["Jack","John","Bob"]}}, {_id: 0})				// filter by not specific this names
+
+db.users.find({child: {$exists: true}}, {_id: 0})						// filter by exists child
+
+db.users.find({child: {$exists: false}}, {_id: 0})						// filter by not exists child
+
+db.users.find({favColor: {$size: 3}}, {_id: 0})						// filter by column favColor size = 3
+
+db.users.find({"favColor.1": "Red"}, {_id: 0})						// filter by column favColor element 1 = "Red"
+
+db.users.find({favColor: {$elemMatch: {$lte: "a"}}}, {_id: 0})				// filter by column favColor match <= "a"
+
+db.users.find({age: 23}, {_id: 0})							// filters by age
+
+db.users.find({age: 23, email: "admin@gmail.com"}, {_id: 0})				// filters by age & email  (not found)
+
+db.users.find({$or: [{age: 23}, {email: "admin@gmail.com"}]}, {_id: 0})			// filters by age || email  ( found)
+
+db.users.find({$or: [{age: {$lt: 38}}, {email: "admin@gmail.com"}]}, {_id: 0}).sort({age: 1})	// filters by age < 38 || email & sort  ( found)
+
+db.users.find({$or: [{age: {$lte: 38}}, {email: "admin@gmail.com"}]}, {_id: 0}).sort({age: 1})	// filters by age <= 38 || email & sort  ( found)
+
+db.users.find({$or: [{age: {$gt: 38}}, {email: "admin@gmail.com"}]}, {_id: 0}).sort({age: -1})	// filters by age > 38 || email & sort  ( found)
+
+db.users.find({$or: [{age: {$gte: 32}}, {email: "admin@gmail.com"}]}, {_id: 0}).sort({age: 1})	// filters by age >= 32 || email & sort  ( found)
+
+db.users.find({$or: [{age: {$eq: 32}}, {email: "admin@gmail.com"}]}, {_id: 0}).sort({age: 1})	// filters by age = 32 || email & sort  ( found)
+
+db.users.find({$or: [{age: {$ne: 32}}, {email: "admin@gmail.com"}]}, {_id: 0}).sort({age: 1})	// filters by age != 32 || email & sort  ( found)
+
+db.users.find().limit(3)  								// show only 3 users
+
+db.users.find({}, {_id: 0}).sort({age: -1, email: 1})					// sort by age & email
+
+db.users.find({}, {_id: 0}).sort({age: -1, email: 1}).limit(2)					// sort by age & email & limit 2 users
+
+db.users.find({}, {_id: 0}).sort({age: 1})						// sort by age
+
+db.users.bulkWrite([
+{
+insertOne: {
+"document": { name: "Mike", age: 32, email: "mike@gmail.com" }
+}
+},
+{
+deleteOne: {
+filter: { age: 22 }
+}
+},
+{
+updateOne: {
+filter: { name: "Mike" },
+update: { $set: {email: "mickle@gmail.com"} }
+}
+},
+{
+replaceOne: {
+filter: { name: "John" },
+replacement: { name: "Johny", age: 45, email: "johny@gmail.com" }
+}
+}
+])
+
+db.users.bulkWrite([
+{
+insertOne: {
+"document": { name: "Mike", age: 32, email: "mike@gmail.com" }
+}
+},
+{
+deleteOne: {
+filter: { age: 22 }
+}
+},
+{
+updateMany: {
+filter: { name: "Mike" },
+update: { $set: {email: "mickle@gmail.com"} }
+}
+},
+{
+replaceOne: {
+filter: { name: "John" },
+replacement: { name: "Johny", age: 45, email: "johny@gmail.com" }
+}
+}
+])
+
+***** Lesson # 7 *****
+
+db.articles.insertMany([
+{
+"title": "Ness company",
+"anons": "Up company",
+"text": "Up actions by all fronts",
+"date": new Date('2019-02-05')
+},
+{
+"title": "Matrix company",
+"anons": "Up company",
+"text": "Up actions by all fronts",
+"date": new Date('2018-03-06')
+},
+{
+"title": "Amdocs company",
+"anons": "Up company",
+"text": "Up actions by all fronts",
+"date": new Date('2020-04-20')
+}
+]) 							// create new table "articles"
+
+db.articles.createIndex({title: "text", anons: "text", text: "text"})	// create Index by 3 columns
+
+db.articles.find({ $text: {$search: "Amdocs"} })			// search by Index text "Amdocs"
+
+db.articles.find({ $text: {$search: "Amdocs projects"} })		// search by Index text "Amdocs" & "projects"
+
+db.articles.find(
+{ $text: {$search: "Ness projects"} },
+{ score: {$meta:  "textScore"} }
+).sort({score: {$meta:  "textScore"}})				// search by Index text "Ness" & "projects" & sort by score number from big to small
+
+db.articles.find({ $text: {$search: "Up company"} })		// search by Index text "Up" & "company"
+
+db.articles.find({ $text: {$search: "Amdocs Ness"} })		// search by Index text "Amdocs" & "Ness"
+
+***** Lesson # 8 *****
+
+db.users.count({age: 19})					// count objects
+
+db.users.count({name: "Mike"})				// count objects
+
+db.users.distinct("email")					// show all emails remove dublicate
+
+db.users.distinct("age")					// show all ages remove dublicate
+
+db.users.aggregate([
+{$match: {} },
+{$group: {_id: "$name", age: {$sum: "$age"}} }
+])							// sum ages for all columns
+
+db.users.aggregate([
+{$match: {name: "Mike"} },
+{$group: {_id: "$name", age: {$sum: "$age"}} }
+])							// sum ages by name = "Mike" only
+
+
+
+
+
+
+
+
+
